@@ -1,4 +1,4 @@
-import express from "express";
+import express, { response } from "express";
 import { fileURLToPath } from "node:url";
 
 const app = express();
@@ -23,11 +23,21 @@ app.use((request, response, next) => {
   next();
 });
 
+const filmes = [
+    {
+        "id" : 1,
+        "titulo" : "O Poderoso Chefão",
+        "ano" : 1972,
+        "genero" : "Crime, Drama"
+    }
+]
 
 
 app.use(express.json());
 
-app.get("/filmes" )
+app.get("/filmes", (request, response) => {
+    response.status(200).json(filmes) 
+})
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   app.listen(PORTA, () => {
     console.log(`API disponível em http://localhost:${PORTA}`);
