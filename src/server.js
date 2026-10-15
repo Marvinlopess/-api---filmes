@@ -29,14 +29,29 @@ const filmes = [
         "titulo" : "O Poderoso Chefão",
         "ano" : 1972,
         "genero" : "Crime, Drama"
+    },{
+
+        "id" : 2,
+        "titulo" : "Carros 2",
+        "ano" : 1780,
+        "genero" : "Crime, Drama"
     }
+    ,
+    {
+
+        "id" : 3,
+        "titulo" : "zootopia 2",
+        "ano" : 8982,
+        "genero" : "comedia"
+    }
+
 ]
 
 
 app.use(express.json());
 
 app.get("/filmes", (request, response) => {
-    response.status(200).json(filmes) 
+    response.status(200).json(filmes)
 })
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   app.listen(PORTA, () => {
