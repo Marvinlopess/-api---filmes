@@ -53,6 +53,16 @@ app.use(express.json());
 app.get("/filmes", (request, response) => {
     response.status(200).json(filmes)
 })
+app.get("/filmes/:id",(request, response) => {
+   const id = Number(request.params.id);
+   const filme = filmes.find(filme => filme.id === id);
+   
+   
+   
+    response.status(200).json(filme)
+
+})
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   app.listen(PORTA, () => {
     console.log(`API disponível em http://localhost:${PORTA}`);
