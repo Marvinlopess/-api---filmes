@@ -54,19 +54,33 @@ app.get("/filmes", (request, response) => {
     response.status(200).json(filmes)
 })
 app.get("/filmes/:id",(request, response) => {
-   const id = Number(request.params.id);
+   const id = request.params.id
    const filme = filmes.find(filme => filme.id === id);
    
-   
+   console.log(isNaN(Number(id)))
+   if(isNaN(id) !== "number"){
+    response.status(400).json({mensgaem: "id deve ser um numero"})
+   }
+   if(!filme){
+    response.status(404).json({mensagem: "Filme não encontrado"})
+   }
    
     response.status(200).json(filme)
 
 })
+app.post("/filmes", (request, response) => {
+    const {titulo, ano, genero} = request.body
+})
+
+
+
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   app.listen(PORTA, () => {
     console.log(`API disponível em http://localhost:${PORTA}`);
   });
-}
+}app.use((request, response) => {
+    return response.status(404).json({message: "rota nao encontrada"})
+})
 
 export default app;
