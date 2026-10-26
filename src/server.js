@@ -62,9 +62,9 @@ app.get("/filmes", (request, response) => {
 app.get("/filmes/:id", (request, response) => {
   const id = Number(request.params.id);
 
-  if (isNaN(id)) {
-    return response.status(400).json({ mensagem: "id deve ser um numero" });
-  }
+if (!Number.isInteger(id) || id <= 0) {
+  return response.status(400).json({ mensagem: "id deve ser um número válido" });
+}
 
   const filme = filmes.find((filme) => filme.id === id);
 
@@ -78,6 +78,14 @@ app.get("/filmes/:id", (request, response) => {
 app.post("/filmes", (request, response) => {
   const { titulo, ano, genero } = request.body;
 
+  if (!titulo || titulo.trim() === "") {
+    return response.status(400).json({ mensagem: "Título é obrigatório" });
+  }
+
+  if (!ano || ano > new Date().getFullYear()) {
+    return response.status(400).json({ mensagem: "Ano inválido" });
+  }
+
   const novoFilme = {
     id: filmes.length + 1,
     titulo: titulo,
@@ -89,6 +97,7 @@ app.post("/filmes", (request, response) => {
 
   return response.status(201).json(novoFilme);
 })
+
 
 
 
