@@ -1,24 +1,38 @@
-const filmes = [
-  { id: 1, titulo: "O Poderoso Chefão", ano: 1972, genero: "Crime, Drama" },
-  { id: 2, titulo: "Carros 2", ano: 2004, genero: "Animação" },
-  { id: 3, titulo: "Zootopia", ano: 2016, genero: "Animação" }
-];
+import fs from "node:fs";
+
+const caminho = new URL("../../data/filmes.json", import.meta.url);
+
+function lerFilmes() {
+  const dados = fs.readFileSync(caminho, "utf-8");
+  return JSON.parse(dados);
+}
 
 function listar() {
-  return filmes;
+  return lerFilmes();
 }
 
 function buscarPorId(id) {
+  const filmes = lerFilmes();
   return filmes.find((filme) => filme.id === id);
 }
 
 function adicionar(filme) {
+  const filmes = lerFilmes();
   filmes.push(filme);
+
+  fs.writeFileSync(caminho, JSON.stringify(filmes, null, 2));
+
   return filme;
 }
 
 function proximoId() {
-  return filmes.length + 1;
+  const filmes = lerFilmes();
+
+  if (filmes.length === 0) {
+    return 1;
+  }
+
+  return Math.max(...filmes.map((filme) => filme.id)) + 1;
 }
 
 export { listar, buscarPorId, adicionar, proximoId };
