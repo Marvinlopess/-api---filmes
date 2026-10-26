@@ -1,20 +1,14 @@
-import express, { response } from "express";
+import express from "express";
 import { fileURLToPath } from "node:url";
+import { listar, buscar, criar } from "./controllers/filmesController.js";
 
 const app = express();
 const PORTA = Number(process.env.PORT || 3000);
 
-// Permite que o SimuladorRequest.html seja aberto fora deste projeto.
 app.use((request, response, next) => {
   response.setHeader("Access-Control-Allow-Origin", "*");
-  response.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET,OPTIONS",
-  );
-  response.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization",
-  );
+  response.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
   if (request.method === "OPTIONS") {
     return response.sendStatus(204);
@@ -23,91 +17,24 @@ app.use((request, response, next) => {
   next();
 });
 
-const filmes = [
-    {
-        "id" : 1,
-        "titulo" : "O Poderoso Chefão",
-        "ano" : 1972,
-        "genero" : "Crime, Drama"
-    },{
-
-        "id" : 2,
-        "titulo" : "Carros 2",
-        "ano" : 1780,
-        "genero" : "Crime, Drama"
-    }
-    ,
-    {
-
-        "id" : 3,
-        "titulo" : "zootopia 2",
-        "ano" : 8982,
-        "genero" : "comedia"
-    }
-
-]
-
-
 app.use(express.json());
 
 app.get("/", (request, response) => {
-  response.status(200).send("API de filmes no ar");
+  return response.status(200).send("API de filmes no ar");
 });
 
+app.get("/filmes", listar);
+app.get("/filmes/:id", buscar);
+app.post("/filmes", criar);
 
-app.get("/filmes", (request, response) => {
-    response.status(200).json(filmes)
-})
-
-app.get("/filmes/:id", (request, response) => {
-  const id = Number(request.params.id);
-
-if (!Number.isInteger(id) || id <= 0) {
-  return response.status(400).json({ mensagem: "id deve ser um número válido" });
-}
-
-  const filme = filmes.find((filme) => filme.id === id);
-
-  if (!filme) {
-    return response.status(404).json({ mensagem: "Filme não encontrado" });
-  }
-
-  return response.status(200).json(filme);
-})
-
-app.post("/filmes", (request, response) => {
-  const { titulo, ano, genero } = request.body;
-
-  if (!titulo || titulo.trim() === "") {
-    return response.status(400).json({ mensagem: "Título é obrigatório" });
-  }
-
-  if (!ano || ano > new Date().getFullYear()) {
-    return response.status(400).json({ mensagem: "Ano inválido" });
-  }
-
-  const novoFilme = {
-    id: filmes.length + 1,
-    titulo: titulo,
-    ano: ano,
-    genero: genero
-  };
-
-  filmes.push(novoFilme);
-
-  return response.status(201).json(novoFilme);
-})
-
-
-
-
+app.use((request, response) => {
+  return response.status(404).json({ message: "rota nao encontrada" });
+});
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   app.listen(PORTA, () => {
-    console.log(`API disponível em http://localhost:${PORTA}`);
+    console.log(`API disponível em http://localhost:${PORTA}` );
   });
-}app.use((request, response) => {
-    return response.status(404).json({message: "rota nao encontrada"})
-})
+}
 
 export default app;
