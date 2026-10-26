@@ -76,7 +76,18 @@ app.get("/filmes/:id", (request, response) => {
 })
 
 app.post("/filmes", (request, response) => {
-    const {titulo, ano, genero} = request.body
+  const { titulo, ano, genero } = request.body;
+
+  const novoFilme = {
+    id: filmes.length + 1,
+    titulo: titulo,
+    ano: ano,
+    genero: genero
+  };
+
+  filmes.push(novoFilme);
+
+  return response.status(201).json(novoFilme);
 })
 
 
