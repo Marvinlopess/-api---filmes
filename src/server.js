@@ -50,24 +50,31 @@ const filmes = [
 
 app.use(express.json());
 
+app.get("/", (request, response) => {
+  response.status(200).send("API de filmes no ar");
+});
+
+
 app.get("/filmes", (request, response) => {
     response.status(200).json(filmes)
 })
-app.get("/filmes/:id",(request, response) => {
-   const id = request.params.id
-   const filme = filmes.find(filme => filme.id === id);
-   
-   console.log(isNaN(Number(id)))
-   if(isNaN(id) !== "number"){
-    response.status(400).json({mensgaem: "id deve ser um numero"})
-   }
-   if(!filme){
-    response.status(404).json({mensagem: "Filme não encontrado"})
-   }
-   
-    response.status(200).json(filme)
 
+app.get("/filmes/:id", (request, response) => {
+  const id = Number(request.params.id);
+
+  if (isNaN(id)) {
+    return response.status(400).json({ mensagem: "id deve ser um numero" });
+  }
+
+  const filme = filmes.find((filme) => filme.id === id);
+
+  if (!filme) {
+    return response.status(404).json({ mensagem: "Filme não encontrado" });
+  }
+
+  return response.status(200).json(filme);
 })
+
 app.post("/filmes", (request, response) => {
     const {titulo, ano, genero} = request.body
 })
